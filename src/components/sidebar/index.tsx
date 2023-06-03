@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
-import { Button } from '../ui/button'
 import { PackagePlus, Tag, TrendingUp } from 'lucide-react'
 import SidebarButton from './sidebar-button'
 

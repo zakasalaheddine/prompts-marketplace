@@ -1,14 +1,5 @@
-'use client'
 import React from 'react'
 import { Button } from '../ui/button'
-import { cn } from '@/lib/utils'
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
