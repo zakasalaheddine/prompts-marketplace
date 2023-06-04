@@ -1,12 +1,18 @@
-import { Button } from '../components/ui/button'
-import { PlusCircle } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
 import { featuredPrompts } from '../components/fake/data'
 import PromptArtwork from '../components/prompt-artwork'
-import SearchCommand from '../components/search-command'
 import MainLayout from '@/components/layouts/main'
+import { PrismaClient } from '@prisma/client'
 
-export default function Home() {
+const prisma = new PrismaClient()
+
+async function getPrompts() {
+  return await prisma.prompt.findMany({
+    include: { category: true, platform: true }
+  })
+}
+
+export default async function Home() {
+  const prompts = await getPrompts()
   return (
     <MainLayout
       title="Browse Our Diverse AI Prompt Marketplace"

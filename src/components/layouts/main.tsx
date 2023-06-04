@@ -5,13 +5,12 @@ import SearchCommand from '../search-command'
 import { Button } from '../ui/button'
 import { PlusCircle } from 'lucide-react'
 import { Separator } from '@radix-ui/react-separator'
+import Link from 'next/link'
 
 interface MainLayoutProps {
   children: ReactNode
   title: string
-  description?:
-    | string
-    | ``
+  description?: string | ``
 }
 
 export default function MainLayout({
@@ -20,8 +19,8 @@ export default function MainLayout({
   description
 }: MainLayoutProps) {
   return (
-    <main className="bg-background h-full">
-      <div className="grid lg:grid-cols-12 relative">
+    <main className="bg-background h-full flex flex-col justify-between min-h-screen">
+      <div className="grid lg:grid-cols-12 relative h-full flex-1">
         <Sidebar
           logo={
             <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
@@ -29,9 +28,9 @@ export default function MainLayout({
             </h2>
           }
           selected="trending"
-          className="hidden lg:block lg:fixed w-60 lg:border-r h-full"
+          className="hidden lg:block lg:fixed w-60 z-10"
         />
-        <div className="ml-60 lg:col-span-12">
+        <div className="ml-60 lg:col-span-12 lg:border-l">
           <div className="h-full px-4 py-6 lg:px-8">
             <div className="flex items-center flex-col justify-center md:justify-between md:flex-row">
               <div className="space-y-1 md:max-w-lg">
@@ -55,6 +54,17 @@ export default function MainLayout({
           </div>
         </div>
       </div>
+      <footer className="w-full bg-secondary z-40 h-20 flex px-20 items-center justify-between">
+        <h2 className="mb-2 px-2 text-2xl font-semibold tracking-tight text-white">
+          Ai Buddy
+        </h2>
+        <div className='flex text-white gap-2 font-light tracking-tight'>
+          <Link href="/">About</Link>
+          <Link href="/">Contact</Link>
+          <Link href="/">Privacy</Link>
+          <Link href="/">Terms of conditions</Link>
+        </div>
+      </footer>
     </main>
   )
 }
