@@ -1,4 +1,3 @@
-import { featuredPrompts } from '../components/fake/data'
 import PromptArtwork from '../components/prompt-artwork'
 import MainLayout from '@/components/layouts/main'
 import { PrismaClient } from '@prisma/client'
@@ -22,7 +21,7 @@ export default async function Home() {
     >
       <div className="relative">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 space-x-4 pb-4 items-center gap-4">
-          {featuredPrompts.map((prompt) => (
+          {prompts.map((prompt) => (
             <PromptArtwork
               key={prompt.title}
               prompt={prompt}

@@ -1,11 +1,13 @@
-import { Prompt } from '@/components/fake/data'
 import { cn } from '@/lib/utils'
+import { Prompt, Category, Platform } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Url } from 'url'
 
 interface PromptArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  prompt: Prompt
+  prompt: Prompt & {
+    category: Category
+    platform: Platform
+  }
   aspectRatio?: 'portrait' | 'square'
   width?: number
   height?: number
@@ -27,7 +29,9 @@ export default function PromptArtwork({
         <div
           className="overflow-hidden rounded-md"
           style={{
-            backgroundColor: prompt.bgColor ? prompt.bgColor : 'transparent'
+            backgroundColor: prompt?.category?.bgColor
+              ? prompt?.category?.bgColor
+              : 'transparent'
           }}
         >
           <Image
@@ -47,8 +51,8 @@ export default function PromptArtwork({
           <h3 className="font-medium leading-none">{prompt.title}</h3>
         </Link>
 
-        <Link href={`/seller/${prompt.seller}`}>
-          <p className="text-xs text-muted-foreground">{prompt.seller}</p>
+        <Link href={`/seller/${prompt.user_id}`}>
+          <p className="text-xs text-muted-foreground">{prompt.user_id}</p>
         </Link>
       </div>
     </div>
