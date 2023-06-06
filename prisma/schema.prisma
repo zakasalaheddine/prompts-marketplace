@@ -22,7 +22,7 @@ model Category {
   id      Int      @id @default(autoincrement())
   name    String
   slug    String   @unique
-  bgColor String? 
+  bgColor String?
   Prompt  Prompt[]
 }
 
@@ -39,6 +39,8 @@ model Prompt {
   slug          String          @unique
   cover         String
   description   String          @db.Text
+  price         Decimal
+  prompt        String          @db.Text
   platform      Platform        @relation(fields: [platformId], references: [id])
   platformId    Int
   category      Category        @relation(fields: [categoryId], references: [id])
