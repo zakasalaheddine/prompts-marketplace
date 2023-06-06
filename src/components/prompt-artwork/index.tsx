@@ -50,10 +50,9 @@ export default function PromptArtwork({
         <Link href={href}>
           <h3 className="font-medium leading-none">{prompt.title}</h3>
         </Link>
-
-        <Link href={`/seller/${prompt.user_id}`}>
-          <p className="text-xs text-muted-foreground">{prompt.user_id}</p>
-        </Link>
+        <p className="text-xs text-muted-foreground">{`$${prompt.price.toFixed(
+          2
+        )}`}</p>
       </div>
     </div>
   )

@@ -5,9 +5,11 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function getPrompts() {
-  return await prisma.prompt.findMany({
+  const promptsList = await prisma.prompt.findMany({
     include: { category: true, platform: true }
   })
+  prisma.$disconnect()
+  return promptsList
 }
 
 export default async function Home() {
