@@ -48,6 +48,7 @@ model Prompt {
   TagsOnPrompts TagsOnPrompts[]
   user_id       String
   images        String
+  sales         sales[]
 }
 
 model TagsOnPrompts {
@@ -57,4 +58,14 @@ model TagsOnPrompts {
   promptId Int
 
   @@id([tagId, promptId])
+}
+
+model sales {
+  id       Int      @id @default(autoincrement())
+  prompt   Prompt   @relation(fields: [promptId], references: [id])
+  promptId Int
+  date     DateTime
+  buyer_id String
+
+  @@unique([promptId, buyer_id])
 }

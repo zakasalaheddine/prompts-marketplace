@@ -1,19 +1,45 @@
 import PromptArtwork from '../components/prompt-artwork'
 import MainLayout from '@/components/layouts/main'
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-async function getPrompts() {
+async function getPrompts({
+  category,
+  platform,
+  order
+}: {
+  category?: string
+  platform?: string
+  order?: string
+}) {
+  let orderBy:
+    | Prisma.Enumerable<Prisma.PromptOrderByWithRelationInput>
+    | undefined = undefined
+  if (order === 'trending' || order === undefined)
+    orderBy = { sales: { _count: 'desc' } }
+  if (order === 'new') orderBy = { id: 'desc' }
   const promptsList = await prisma.prompt.findMany({
-    include: { category: true, platform: true }
+    include: { category: true, platform: true },
+    where: {
+      category: { slug: category },
+      AND: {
+        platform: { slug: platform },
+        AND: { price: order === 'free' ? 0 : undefined }
+      }
+    },
+    orderBy: orderBy ? { ...orderBy } : undefined
   })
   prisma.$disconnect()
   return promptsList
 }
 
-export default async function Home() {
-  const prompts = await getPrompts()
+export default async function Home({
+  searchParams: { category, platform, order }
+}: {
+  searchParams: { category?: string; platform?: string; order?: string }
+}) {
+  const prompts = await getPrompts({ category, platform, order })
   return (
     <MainLayout
       title="Browse Our Diverse AI Prompt Marketplace"

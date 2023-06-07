@@ -85,7 +85,7 @@ export default async function PromptPage({
               <Link
                 key={tag.tagId}
                 href={`/tag/${tag.tag.slug}`}
-                className="font-semibold tracking-tight "
+                className="font-semibold tracking-tight"
               >
                 <span>#{tag.tag.name}</span>
               </Link>

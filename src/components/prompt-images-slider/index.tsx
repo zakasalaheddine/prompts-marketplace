@@ -33,7 +33,7 @@ export default function PromptImagesSlider({
             height={1000}
             alt="Test"
             className={cn(
-              'w-full h-full rounded-2xl bg-cover transition-all duration-500 absolute',
+              'w-full h-full rounded-2xl bg-cover transition-all duration-500 absolute object-contain',
               idx === currentIndex ? 'block opacity-100' : 'hidden opacity-0'
             )}
           />

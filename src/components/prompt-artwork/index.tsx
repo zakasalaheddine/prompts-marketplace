@@ -24,7 +24,7 @@ export default function PromptArtwork({
   ...props
 }: PromptArtworkProps) {
   return (
-    <div className={cn('space-y-3', className)} {...props}>
+    <div className={cn('space-y-3 relative', className)} {...props}>
       <Link href={href}>
         <div
           className="overflow-hidden rounded-md"
@@ -54,6 +54,7 @@ export default function PromptArtwork({
           2
         )}`}</p>
       </div>
+      <p className='absolute top-1 left-1 bg-secondary text-white px-2 rounded-sm shadow-sm '>{prompt.platform.name}</p>
     </div>
   )
 }

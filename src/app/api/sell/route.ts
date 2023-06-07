@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ...promptSell.error.flatten() }, { status: 500 })
   }
   const { data: { title, description, price, category, platform, prompt, tags, cover, images } } = promptSell
-  const TagsData = tags.split(',').map(tag => ({ name: tag.toLowerCase(), slug: slugify(tag) }))
+  const TagsData = tags.split(',').filter(tag => tag.trim() !== '').map(tag => ({ name: tag.toLowerCase(), slug: slugify(tag) }))
 
   await prisma.tag.createMany({ data: TagsData, skipDuplicates: true })
   const coverUrl = await cloudinaryUploadFile(cover)

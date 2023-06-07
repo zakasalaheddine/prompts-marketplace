@@ -31,7 +31,6 @@ export default function MainLayout({
               </h2>
             </Link>
           }
-          selected="trending"
           className="hidden lg:block lg:fixed w-60 z-10"
         />
         <div className="lg:ml-60 lg:col-span-12 lg:border-l">
