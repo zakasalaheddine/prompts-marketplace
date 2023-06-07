@@ -15,6 +15,7 @@ export default function Sidebar({ className, logo }: SidebarProps) {
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
+      params.delete('search')
       params.set(name, value)
 
       return `/?${params.toString()}`

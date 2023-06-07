@@ -7,12 +7,24 @@ const prisma = new PrismaClient()
 async function getPrompts({
   category,
   platform,
-  order
+  order,
+  search
 }: {
   category?: string
   platform?: string
   order?: string
+  search?: string
 }) {
+  if (search) {
+    const searchedPrompt = await prisma.prompt.findMany({
+      include: { category: true, platform: true },
+      where: {
+        title: { contains: search }
+      }
+    })
+    prisma.$disconnect()
+    return searchedPrompt
+  }
   let orderBy:
     | Prisma.Enumerable<Prisma.PromptOrderByWithRelationInput>
     | undefined = undefined
@@ -35,11 +47,16 @@ async function getPrompts({
 }
 
 export default async function Home({
-  searchParams: { category, platform, order }
+  searchParams: { category, platform, order, search }
 }: {
-  searchParams: { category?: string; platform?: string; order?: string }
+  searchParams: {
+    category?: string
+    platform?: string
+    order?: string
+    search?: string
+  }
 }) {
-  const prompts = await getPrompts({ category, platform, order })
+  const prompts = await getPrompts({ category, platform, order, search })
   return (
     <MainLayout
       title="Browse Our Diverse AI Prompt Marketplace"
