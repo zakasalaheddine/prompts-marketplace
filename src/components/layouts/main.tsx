@@ -12,13 +12,15 @@ interface MainLayoutProps {
   title: string
   description?: string | ``
   sellerPage?: boolean
+  isAdmin?: boolean
 }
 
 export default function MainLayout({
   children,
   title,
   description,
-  sellerPage = false
+  sellerPage = false,
+  isAdmin = false
 }: MainLayoutProps) {
   return (
     <main className="bg-background h-full flex flex-col justify-between min-h-screen">
@@ -45,7 +47,7 @@ export default function MainLayout({
                 )}
               </div>
               {sellerPage ? null : (
-                <div className="mt-2 md:mt-0 flex gap-3">
+                <div className="mt-2 md:mt-0 flex gap-3 items-center">
                   <SearchCommand />
                   <Link href="/sell">
                     <Button variant="secondary">
@@ -53,6 +55,11 @@ export default function MainLayout({
                       <span className="whitespace-nowrap">Start Selling</span>
                     </Button>
                   </Link>
+                  {isAdmin && (
+                    <Link href="/" className="text-muted-foreground">
+                      Dashboard
+                    </Link>
+                  )}
                 </div>
               )}
             </div>

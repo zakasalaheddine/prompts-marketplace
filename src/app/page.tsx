@@ -1,5 +1,6 @@
 import PromptArtwork from '../components/prompt-artwork'
 import MainLayout from '@/components/layouts/main'
+import { isCurrentUserAdmin } from '@/lib/isAdmin'
 import { Prisma, PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -56,6 +57,8 @@ export default async function Home({
     search?: string
   }
 }) {
+  const isAdmin = await isCurrentUserAdmin()
+
   const prompts = await getPrompts({ category, platform, order, search })
   return (
     <MainLayout
@@ -63,6 +66,7 @@ export default async function Home({
       description="Discover a wide range of AI prompts. From GPT to DALL-E, from
     Midjourney to Stable Diffusion, find the prompt that suits
     your needs."
+      isAdmin={isAdmin}
     >
       <div className="relative">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 space-x-4 pb-4 items-center gap-4">

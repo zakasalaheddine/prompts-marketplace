@@ -2,6 +2,7 @@ import { singlePrompt } from '@/components/fake/data'
 import MainLayout from '@/components/layouts/main'
 import PromptImagesSlider from '@/components/prompt-images-slider'
 import { Button } from '@/components/ui/button'
+import { isCurrentUserAdmin } from '@/lib/isAdmin'
 import { clerkClient } from '@clerk/nextjs'
 import { PrismaClient } from '@prisma/client'
 import Link from 'next/link'
@@ -46,9 +47,10 @@ export default async function PromptPage({
       promptImages = [...promptImages, ...JSON.parse(prompt.images)]
     return promptImages
   }
+  const isAdmin = await isCurrentUserAdmin()
 
   return (
-    <MainLayout title={prompt?.title}>
+    <MainLayout title={prompt?.title} isAdmin={isAdmin}>
       <div className="grid grid-cols-12">
         <div className="col-span-6 w-full">
           <PromptImagesSlider images={getImages()} />
