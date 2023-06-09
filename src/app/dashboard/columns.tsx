@@ -13,6 +13,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import axios from 'axios'
+
+const updatePromptStatus = async (
+  promptId: string,
+  status: 'PUBLISHED' | 'DECLINED'
+) => {
+  await axios.put('/api/prompt', { promptId, status })
+}
 
 export const columns: ColumnDef<
   Prompt & {
@@ -74,10 +82,20 @@ export const columns: ColumnDef<
               Copy Prompt
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                updatePromptStatus(`${prompt.id}`, 'PUBLISHED')
+              }}
+            >
               Publish Prompt
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive cursor-pointer">
+            <DropdownMenuItem
+              className="text-destructive cursor-pointer"
+              onClick={() => {
+                updatePromptStatus(`${prompt.id}`, 'DECLINED')
+              }}
+            >
               Decline Prompt
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -33,6 +33,12 @@ model Tag {
   TagsOnPrompts TagsOnPrompts[]
 }
 
+enum Status {
+  DRATF
+  PUBLISHED
+  DECLINED
+}
+
 model Prompt {
   id            Int             @id @default(autoincrement())
   title         String
@@ -49,6 +55,7 @@ model Prompt {
   user_id       String
   images        String
   sales         sales[]
+  status        Status          @default(DRATF)
 }
 
 model TagsOnPrompts {

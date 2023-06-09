@@ -1,5 +1,5 @@
 'use client'
-import { Category, Platform, Tag } from '@prisma/client'
+import { Category, Platform, Prompt, Tag } from '@prisma/client'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import {
@@ -18,6 +18,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { SellFormSchema } from '@/types/sell-form-schema'
 import { cn } from '@/lib/utils'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 type SellFormProps = {
   categories: Category[]
@@ -26,6 +27,7 @@ type SellFormProps = {
 }
 
 export default function SellForm({ categories, platforms }: SellFormProps) {
+  const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState('')
@@ -65,9 +67,14 @@ export default function SellForm({ categories, platforms }: SellFormProps) {
     formData.append('category', category)
     formData.append('price', price.toString())
     formData.append('prompt', prompt)
-    const { data, status } = await axios.post('/api/sell', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    try {
+      const { data } = await axios.post<Prompt>('/api/sell', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      router.push(`/${data.slug}`)
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <form

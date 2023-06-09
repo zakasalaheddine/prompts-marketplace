@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from '@prisma/client'
 import slugify from "slugify";
 import { cloudinaryUploadFile } from "@/lib/cloudinary";
 import { SellFormSchema } from "@/types/sell-form-schema";
 import { auth } from "@clerk/nextjs";
-
-const prisma = new PrismaClient()
+import { prisma } from "@/db";
 
 export async function POST(req: NextRequest) {
   const { userId } = auth();
@@ -28,7 +26,7 @@ export async function POST(req: NextRequest) {
   if (images) {
     for (const image of images) {
       const result = await cloudinaryUploadFile(image)
-      imagesUrls.push(result.url)
+      if (result) imagesUrls.push(result.url)
     }
   }
   const createdPrompt = await prisma.prompt.create({
@@ -40,7 +38,7 @@ export async function POST(req: NextRequest) {
       categoryId: Number(category),
       platformId: Number(platform),
       slug: slugify(promptSell.data.title),
-      cover: coverUrl.url,
+      cover: coverUrl ? coverUrl.url : '',
       images: JSON.stringify(imagesUrls),
       user_id: userId
     }

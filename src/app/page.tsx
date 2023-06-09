@@ -1,9 +1,8 @@
 import PromptArtwork from '../components/prompt-artwork'
 import MainLayout from '@/components/layouts/main'
+import { prisma } from '@/db'
 import { isCurrentUserAdmin } from '@/lib/isAdmin'
-import { Prisma, PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { Prisma } from '@prisma/client'
 
 async function getPrompts({
   category,
@@ -20,7 +19,8 @@ async function getPrompts({
     const searchedPrompt = await prisma.prompt.findMany({
       include: { category: true, platform: true },
       where: {
-        title: { contains: search }
+        title: { contains: search },
+        status: 'PUBLISHED'
       }
     })
     prisma.$disconnect()
@@ -35,6 +35,7 @@ async function getPrompts({
   const promptsList = await prisma.prompt.findMany({
     include: { category: true, platform: true },
     where: {
+      status: 'PUBLISHED',
       category: { slug: category },
       AND: {
         platform: { slug: platform },

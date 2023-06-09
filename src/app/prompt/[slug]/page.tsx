@@ -2,13 +2,11 @@ import { singlePrompt } from '@/components/fake/data'
 import MainLayout from '@/components/layouts/main'
 import PromptImagesSlider from '@/components/prompt-images-slider'
 import { Button } from '@/components/ui/button'
+import { prisma } from '@/db'
 import { isCurrentUserAdmin } from '@/lib/isAdmin'
 import { clerkClient } from '@clerk/nextjs'
-import { PrismaClient } from '@prisma/client'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-
-const prisma = new PrismaClient()
 
 const getPrompt = async (slug: string) => {
   const selectedPrompt = await prisma.prompt.findUnique({

@@ -1,12 +1,11 @@
 import { DataTable } from '@/components/datatable'
 import DashboardLayout from '@/components/layouts/dashboard'
 import { columns } from './columns'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/db'
 
 const getPrompts = async () => {
   return await prisma.prompt.findMany({
+    where: { status: 'DRATF' },
     include: {
       category: { select: { name: true } },
       platform: { select: { name: true } }

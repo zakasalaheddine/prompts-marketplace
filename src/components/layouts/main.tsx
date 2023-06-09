@@ -56,7 +56,7 @@ export default function MainLayout({
                     </Button>
                   </Link>
                   {isAdmin && (
-                    <Link href="/" className="text-muted-foreground">
+                    <Link href="/dashboard" className="text-muted-foreground">
                       Dashboard
                     </Link>
                   )}

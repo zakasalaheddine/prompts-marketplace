@@ -1,8 +1,7 @@
 import MainLayout from '@/components/layouts/main'
 import SellForm from '@/components/sell/form'
+import { prisma } from '@/db'
 import { isCurrentUserAdmin } from '@/lib/isAdmin'
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
 
 const getPlatformsCategories = async () => {
   const [platforms, categories, tags] = await Promise.all([
