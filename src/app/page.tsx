@@ -79,7 +79,7 @@ export default async function Home({
               className="w-[250px]"
               aspectRatio="square"
               width={250}
-              height={330}
+              height={250}
             />
           ))}
         </div>

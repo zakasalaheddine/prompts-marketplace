@@ -29,10 +29,13 @@ export default function PromptArtwork({
         <div
           className="overflow-hidden rounded-md"
           style={{
-            backgroundColor: prompt?.category?.bgColor
+            backgroundColor: prompt?.category?.bgColor && prompt.cover.trim() === ''
               ? prompt?.category?.bgColor
               : 'transparent',
-            height: prompt?.category?.bgColor ? height : 'auto'
+            height:
+              prompt?.category?.bgColor && prompt.cover.trim() === ''
+                ? height
+                : 'auto'
           }}
         >
           {prompt.cover.trim() && (
@@ -42,7 +45,7 @@ export default function PromptArtwork({
               width={width}
               height={height}
               className={cn(
-                'h-auto w-auto object-cover transition-all hover:scale-105',
+                'h-auto w-auto object-contain transition-all hover:scale-105',
                 aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
               )}
             />
