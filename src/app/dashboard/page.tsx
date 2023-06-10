@@ -1,23 +1,21 @@
-import { DataTable } from '@/components/datatable'
 import DashboardLayout from '@/components/layouts/dashboard'
-import { columns } from './columns'
+import PromptsDataTable from './prompts-datatable'
 import { prisma } from '@/db'
 
-const getPrompts = async () => {
-  return await prisma.prompt.findMany({
-    where: { status: 'DRATF' },
+export const queryPrompts = async () =>
+  await prisma.prompt.findMany({
+    where: { status: 'DRAFT' },
     include: {
       category: { select: { name: true } },
       platform: { select: { name: true } }
     }
   })
-}
 
 export default async function Dashboard() {
-  const data = await getPrompts()
+  const data = await queryPrompts()
   return (
     <DashboardLayout>
-      <DataTable columns={columns} data={data} />
+      <PromptsDataTable prompts={data} />
     </DashboardLayout>
   )
 }

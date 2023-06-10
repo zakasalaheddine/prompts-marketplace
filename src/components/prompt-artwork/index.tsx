@@ -31,19 +31,22 @@ export default function PromptArtwork({
           style={{
             backgroundColor: prompt?.category?.bgColor
               ? prompt?.category?.bgColor
-              : 'transparent'
+              : 'transparent',
+            height: prompt?.category?.bgColor ? height : 'auto'
           }}
         >
-          <Image
-            src={prompt.cover}
-            alt={prompt.title}
-            width={width}
-            height={height}
-            className={cn(
-              'h-auto w-auto object-cover transition-all hover:scale-105',
-              aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
-            )}
-          />
+          {prompt.cover.trim() && (
+            <Image
+              src={prompt.cover}
+              alt={prompt.title}
+              width={width}
+              height={height}
+              className={cn(
+                'h-auto w-auto object-cover transition-all hover:scale-105',
+                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
+              )}
+            />
+          )}
         </div>
       </Link>
       <div className="space-y-1 text-sm">
@@ -54,7 +57,9 @@ export default function PromptArtwork({
           2
         )}`}</p>
       </div>
-      <p className='absolute top-1 left-1 bg-secondary text-white px-2 rounded-sm shadow-sm '>{prompt.platform.name}</p>
+      <p className="absolute top-1 left-1 bg-secondary text-white px-2 rounded-sm shadow-sm ">
+        {prompt.platform.name}
+      </p>
     </div>
   )
 }

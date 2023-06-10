@@ -1,9 +1,9 @@
 'use client'
 
 import { DataTableColumnHeader } from '@/components/datatable/column-header'
-import { Category, Platform, Prompt } from '@prisma/client'
+import { Prompt } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal } from 'lucide-react'
+import { Loader2, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,12 +14,93 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import axios from 'axios'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useToast } from '@/components/ui/use-toast'
 
-const updatePromptStatus = async (
-  promptId: string,
+interface IUpdatePromptStatus {
+  promptId: string
   status: 'PUBLISHED' | 'DECLINED'
-) => {
+}
+
+const updatePromptStatus = async ({
+  promptId,
+  status
+}: IUpdatePromptStatus) => {
   await axios.put('/api/prompt', { promptId, status })
+}
+
+const Actions = ({
+  prompt
+}: {
+  prompt: Prompt & {
+    category: {
+      name: string
+    }
+    platform: {
+      name: string
+    }
+  }
+}) => {
+  const queryClient = useQueryClient()
+  const { mutateAsync } = useMutation({
+    mutationFn: updatePromptStatus,
+    mutationKey: ['update-prompt'],
+    onMutate: () => {
+      toast({
+        title: 'Running the update',
+        description: <Loader2 className="animate-spin" />
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['draft-prompts'])
+      toast({
+        title: 'Prompt is updated'
+      })
+    },
+    onError: () => {
+      toast({
+        title: "Updates wasn't passed as it should be",
+        variant: 'destructive'
+      })
+    }
+  })
+  const { toast } = useToast()
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => navigator.clipboard.writeText(`${prompt.prompt}`)}
+        >
+          Copy Prompt
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={async () => {
+            await mutateAsync({ promptId: `${prompt.id}`, status: 'PUBLISHED' })
+          }}
+        >
+          Publish Prompt
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="text-destructive cursor-pointer"
+          onClick={async () => {
+            await mutateAsync({ promptId: `${prompt.id}`, status: 'DECLINED' })
+          }}
+        >
+          Decline Prompt
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 export const columns: ColumnDef<
@@ -62,45 +143,6 @@ export const columns: ColumnDef<
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      const prompt = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(`${prompt.prompt}`)}
-            >
-              Copy Prompt
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                updatePromptStatus(`${prompt.id}`, 'PUBLISHED')
-              }}
-            >
-              Publish Prompt
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-destructive cursor-pointer"
-              onClick={() => {
-                updatePromptStatus(`${prompt.id}`, 'DECLINED')
-              }}
-            >
-              Decline Prompt
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    }
+    cell: ({ row }) => <Actions prompt={row.original} />
   }
 ]

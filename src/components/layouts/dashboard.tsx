@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { SidebarNav } from '../sidebar-nav'
 import { Separator } from '../ui/separator'
 import MainLayout from './main'
+import { DashboardContextProvider } from '@/contexts/dashboard-context'
 
 const sidebarNavItems = [
   {

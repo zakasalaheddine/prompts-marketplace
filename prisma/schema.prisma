@@ -34,7 +34,7 @@ model Tag {
 }
 
 enum Status {
-  DRATF
+  DRAFT
   PUBLISHED
   DECLINED
 }
@@ -55,7 +55,7 @@ model Prompt {
   user_id       String
   images        String
   sales         sales[]
-  status        Status          @default(DRATF)
+  status        Status          @default(DRAFT)
 }
 
 model TagsOnPrompts {
