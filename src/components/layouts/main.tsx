@@ -13,6 +13,7 @@ interface MainLayoutProps {
   description?: string | ``
   sellerPage?: boolean
   isAdmin?: boolean
+  logoText?: string
 }
 
 export default function MainLayout({
@@ -20,7 +21,8 @@ export default function MainLayout({
   title,
   description,
   sellerPage = false,
-  isAdmin = false
+  isAdmin = false,
+  logoText
 }: MainLayoutProps) {
   return (
     <main className="bg-background h-full flex flex-col justify-between min-h-screen">
@@ -29,7 +31,7 @@ export default function MainLayout({
           logo={
             <Link href="/">
               <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-                Ai Buddy
+                {logoText ? logoText : 'Ai Buddy'}
               </h2>
             </Link>
           }

@@ -4,12 +4,14 @@ import PromptImagesSlider from '@/components/prompt-images-slider'
 import { Button } from '@/components/ui/button'
 import { prisma } from '@/db'
 import { isCurrentUserAdmin } from '@/lib/isAdmin'
-import { clerkClient } from '@clerk/nextjs'
+import { querySEO } from '@/requests/query-seo'
+import { auth, clerkClient } from '@clerk/nextjs'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 const getPrompt = async (slug: string) => {
-  const selectedPrompt = await prisma.prompt.findUnique({
+  return await prisma.prompt.findUnique({
     where: { slug },
     include: {
       category: true,
@@ -17,8 +19,6 @@ const getPrompt = async (slug: string) => {
       TagsOnPrompts: { include: { tag: true } }
     }
   })
-  prisma.$disconnect()
-  return selectedPrompt
 }
 
 const getSeller = async (userId: string) => {
@@ -26,6 +26,31 @@ const getSeller = async (userId: string) => {
     return await clerkClient.users.getUser(userId)
   } catch (error) {
     return undefined
+  }
+}
+type Props = {
+  params: { slug: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const siteSettings = await querySEO()
+  const prompt = await getPrompt(params.slug)
+  // GETTING THE IMAGES
+  let promptImages = []
+  if (prompt?.cover) promptImages.push(prompt?.cover)
+  if (prompt?.images && Array.isArray(JSON.parse(prompt.images)))
+    promptImages = [...promptImages, ...JSON.parse(prompt.images)]
+
+  if (siteSettings && prompt) {
+    return {
+      title: `${prompt?.title} | ${siteSettings.name}`,
+      description: prompt?.description,
+      openGraph: {
+        images: promptImages
+      }
+    }
+  } else {
+    return {}
   }
 }
 
@@ -46,9 +71,10 @@ export default async function PromptPage({
     return promptImages
   }
   const isAdmin = await isCurrentUserAdmin()
+  const seo = await querySEO()
 
   return (
-    <MainLayout title={prompt?.title} isAdmin={isAdmin}>
+    <MainLayout title={prompt?.title} isAdmin={isAdmin} logoText={seo?.name}>
       <div className="grid grid-cols-12">
         <div className="col-span-6 w-full">
           <PromptImagesSlider images={getImages()} />

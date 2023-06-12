@@ -22,9 +22,10 @@ export async function PUT(req: NextRequest) {
   if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const updatedSiteSetting = siteSettingFormSchema.parse(await req.json());
 
-  return await prisma.siteSetting.upsert({
+  const data = await prisma.siteSetting.upsert({
     where: { id: 1 },
     create: { ...updatedSiteSetting, googleAnalyticsId: updatedSiteSetting.googleAnalyticsId || '' },
     update: { ...updatedSiteSetting, googleAnalyticsId: updatedSiteSetting.googleAnalyticsId || '' }
   })
+  return NextResponse.json(data)
 }
