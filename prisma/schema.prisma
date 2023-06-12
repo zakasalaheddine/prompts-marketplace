@@ -76,3 +76,19 @@ model sales {
 
   @@unique([promptId, buyer_id])
 }
+
+model SiteSetting {
+  id                 Int     @id @default(autoincrement())
+  name               String
+  description        String
+  contactEmail       String
+  googleAnalyticsId  String
+  commissionRate     Decimal
+  minPrice           Decimal
+  maxPrice           Decimal
+  homePageHeadline   String
+  homePageDescrition String  @db.Text
+  aboutUsContent     String  @db.Text
+  privacyContent     String  @db.Text
+  termsContent       String  @db.Text
+}
