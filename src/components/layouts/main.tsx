@@ -6,6 +6,9 @@ import { Button } from '../ui/button'
 import { PlusCircle } from 'lucide-react'
 import { Separator } from '@radix-ui/react-separator'
 import Link from 'next/link'
+import { Avatar, AvatarImage } from '../ui/avatar'
+import { AvatarFallback } from '@radix-ui/react-avatar'
+import { useAuth, useUser } from '@clerk/nextjs'
 
 interface MainLayoutProps {
   children: ReactNode
@@ -24,6 +27,7 @@ export default function MainLayout({
   isAdmin = false,
   logoText
 }: MainLayoutProps) {
+  const { user } = useUser()
   return (
     <main className="bg-background h-full flex flex-col justify-between min-h-screen">
       <div className="grid lg:grid-cols-12 relative h-full flex-1">
@@ -61,6 +65,14 @@ export default function MainLayout({
                     <Link href="/dashboard" className="text-muted-foreground">
                       Dashboard
                     </Link>
+                  )}
+                  {user && (
+                    <Avatar className='h-8 w-8'>
+                      <AvatarImage src={user.imageUrl} />
+                      <AvatarFallback>{`${user.firstName?.at(
+                        0
+                      )}${user.lastName?.at(0)}`}</AvatarFallback>
+                    </Avatar>
                   )}
                 </div>
               )}
