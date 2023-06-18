@@ -1,7 +1,6 @@
 import { singlePrompt } from '@/components/fake/data'
 import MainLayout from '@/components/layouts/main'
 import PromptImagesSlider from '@/components/prompt-images-slider'
-import { Button } from '@/components/ui/button'
 import { prisma } from '@/db'
 import { isCurrentUserAdmin } from '@/lib/isAdmin'
 import { querySEO } from '@/requests/query-seo'
@@ -9,9 +8,12 @@ import { auth, clerkClient } from '@clerk/nextjs'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import PaymentSection from './payment-section'
+import { exclude } from '@/lib/prisma/exclude'
+import PromptText from './prompt'
 
 const getPrompt = async (slug: string) => {
-  return await prisma.prompt.findUnique({
+  const selectedPrompt = await prisma.prompt.findUnique({
     where: { slug },
     include: {
       category: true,
@@ -19,15 +21,42 @@ const getPrompt = async (slug: string) => {
       TagsOnPrompts: { include: { tag: true } }
     }
   })
+  if (!selectedPrompt) return null
+  try {
+    const { userId } = auth()
+    if (userId) {
+      const purchaseCount = await prisma.purchases.count({
+        where: { userId, promptId: selectedPrompt.id }
+      })
+      if (purchaseCount === 1 || userId === selectedPrompt.user_id)
+        return { ...selectedPrompt, alreadyPurchased: true }
+      else {
+        const { prompt, ...restPrompt } = selectedPrompt
+        return restPrompt
+      }
+    }
+  } catch (error) {
+    const { prompt, ...restPrompt } = selectedPrompt
+    return restPrompt
+  }
 }
 
 const getSeller = async (userId: string) => {
   try {
-    return await clerkClient.users.getUser(userId)
+    const onBoardedUser = await prisma.paypalOnboardedUsers.findFirst({
+      where: { userId }
+    })
+    const user = await clerkClient.users.getUser(userId)
+    return {
+      ...user,
+      merchentId: onBoardedUser?.paypalMerchantId,
+      sellerEmail: onBoardedUser?.paypalEmail
+    }
   } catch (error) {
     return undefined
   }
 }
+
 type Props = {
   params: { slug: string }
 }
@@ -35,7 +64,6 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const siteSettings = await querySEO()
   const prompt = await getPrompt(params.slug)
-  // GETTING THE IMAGES
   let promptImages = []
   if (prompt?.cover) promptImages.push(prompt?.cover)
   if (prompt?.images && Array.isArray(JSON.parse(prompt.images)))
@@ -117,9 +145,16 @@ export default async function PromptPage({
               </Link>
             ))}
           </div>
-          <Button variant="secondary">
-            Get Prompt (${singlePrompt.price})
-          </Button>
+          {'alreadyPurchased' in prompt ? (
+            <PromptText promptText={prompt.prompt} />
+          ) : (
+            <PaymentSection
+              price={`${singlePrompt.price}`}
+              sellerEmail={seller.sellerEmail || ''}
+              sellerMerchentId={seller.merchentId || ''}
+              promptId={prompt.id}
+            />
+          )}
         </div>
       </div>
     </MainLayout>

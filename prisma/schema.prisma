@@ -56,6 +56,7 @@ model Prompt {
   images        String
   sales         sales[]
   status        Status          @default(DRAFT)
+  purchases     purchases[]
 }
 
 model TagsOnPrompts {
@@ -91,4 +92,35 @@ model SiteSetting {
   aboutUsContent     String  @db.Text
   privacyContent     String  @db.Text
   termsContent       String  @db.Text
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  DECLINED
+}
+
+model payement {
+  id      Int           @id @default(autoincrement())
+  orderId String
+  status  PaymentStatus
+}
+
+model paypalOnboardedUsers {
+  id               Int    @id @default(autoincrement())
+  userId           String
+  paypalMerchantId String
+  paypalEmail      String
+
+  @@unique([userId, paypalMerchantId, paypalEmail])
+}
+
+model purchases {
+  id        Int    @id @default(autoincrement())
+  prompt    Prompt @relation(fields: [promptId], references: [id])
+  promptId  Int
+  userId    String
+  orderData String @db.Text
+
+  @@unique([promptId, userId])
 }
