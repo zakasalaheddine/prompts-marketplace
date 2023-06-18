@@ -19,14 +19,20 @@ import { SellFormSchema } from '@/types/sell-form-schema'
 import { cn } from '@/lib/utils'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { Loader2 } from 'lucide-react'
 
 type SellFormProps = {
   categories: Category[]
   platforms: Platform[]
   tags: Tag[]
+  canSell: boolean
 }
 
-export default function SellForm({ categories, platforms }: SellFormProps) {
+export default function SellForm({
+  categories,
+  platforms,
+  canSell
+}: SellFormProps) {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -38,6 +44,7 @@ export default function SellForm({ categories, platforms }: SellFormProps) {
   const [images, setImages] = useState<FileList | null>(null)
   const [prompt, setPrompt] = useState('')
   const [errors, setErrors] = useState<any>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   async function addNewPrompt(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -68,12 +75,15 @@ export default function SellForm({ categories, platforms }: SellFormProps) {
     formData.append('price', price.toString())
     formData.append('prompt', prompt)
     try {
+      setIsLoading(true)
       const { data } = await axios.post<Prompt>('/api/sell', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
-      router.push(`/${data.slug}`)
+      setIsLoading(false)
+      router.push(`/prompt/${data.slug}`)
     } catch (error) {
       console.log(error)
+      setIsLoading(false)
     }
   }
   return (
@@ -271,8 +281,17 @@ export default function SellForm({ categories, platforms }: SellFormProps) {
             </p>
           )}
         </div>
-        <Button variant="secondary" className="max-w-sm" type="submit">
-          Submit for review
+        <Button
+          variant="secondary"
+          className="max-w-sm"
+          type="submit"
+          disabled={!canSell}
+        >
+          {isLoading ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            'Submit for review'
+          )}
         </Button>
       </div>
     </form>

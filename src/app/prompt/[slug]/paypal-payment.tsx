@@ -6,7 +6,7 @@ import {
 } from '@paypal/react-paypal-js'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function PaypalPayment({
   promptId,
@@ -17,6 +17,7 @@ export default function PaypalPayment({
   merchantId: string
   sellerEmailAddress: string
 }) {
+  const router = useRouter()
   const createOrderMutation = useMutation(['create-order'], () =>
     axios.post('/api/paypal/create-order', {
       promptId,
@@ -41,6 +42,7 @@ export default function PaypalPayment({
       promptId,
       data
     })
+    router.refresh()
   }
   return (
     <PayPalScriptProvider

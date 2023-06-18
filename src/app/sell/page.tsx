@@ -28,7 +28,12 @@ export default async function SellPage() {
     >
       <div className="flex flex-col justify-center gap-4 w-full">
         {!userHasOnboarded && <PaypalConnectionButton />}
-        <SellForm categories={categories} platforms={platforms} tags={tags} />
+        <SellForm
+          categories={categories}
+          platforms={platforms}
+          tags={tags}
+          canSell={userHasOnboarded}
+        />
       </div>
     </MainLayout>
   )
