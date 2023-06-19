@@ -20,18 +20,23 @@ import { cn } from '@/lib/utils'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
+import { z } from 'zod'
 
 type SellFormProps = {
   categories: Category[]
   platforms: Platform[]
   tags: Tag[]
   canSell: boolean
+  minPrice: number
+  maxPrice: number
 }
 
 export default function SellForm({
   categories,
   platforms,
-  canSell
+  canSell,
+  minPrice,
+  maxPrice
 }: SellFormProps) {
   const router = useRouter()
   const [title, setTitle] = useState('')
@@ -48,7 +53,13 @@ export default function SellForm({
 
   async function addNewPrompt(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const promptToSell = SellFormSchema.safeParse({
+    const promptToSell = SellFormSchema.extend({
+      price: z
+        .number()
+        .min(minPrice, { message: `Minimum Price is $${minPrice}` })
+        .max(maxPrice, { message: `Maximum Price is $${maxPrice}` })
+        .default(0)
+    }).safeParse({
       title,
       description,
       tags,

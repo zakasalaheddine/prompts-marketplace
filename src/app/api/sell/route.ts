@@ -4,12 +4,18 @@ import { cloudinaryUploadFile } from "@/lib/cloudinary";
 import { SellFormSchema } from "@/types/sell-form-schema";
 import { auth } from "@clerk/nextjs";
 import { prisma } from "@/db";
+import { z } from "zod";
 
 export async function POST(req: NextRequest) {
   const { userId } = auth();
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const data = await req.formData()
-  const promptSell = SellFormSchema.safeParse({
+  const settings = await prisma.siteSetting.findFirst({ where: { id: 1 } })
+  const promptSell = SellFormSchema.extend({
+    price: z.number()
+      .min(Number(settings?.minPrice.toFixed(2)) || 0)
+      .max(Number(settings?.minPrice.toFixed(2)) || 0)
+  }).safeParse({
     ...Object.fromEntries(data.entries()),
     price: Number(data.get('price')),
     images: data.getAll('images')

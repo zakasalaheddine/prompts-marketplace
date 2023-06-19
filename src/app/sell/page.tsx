@@ -15,10 +15,15 @@ const getPlatformsCategories = async () => {
   return { platforms, categories, tags }
 }
 
+const getSiteSettings = async () => {
+  return await prisma.siteSetting.findFirst({ where: { id: 1 } })
+}
+
 export default async function SellPage() {
   const { categories, platforms, tags } = await getPlatformsCategories()
   const isAdmin = await isCurrentUserAdmin()
   const userHasOnboarded = await isUserOnboarded()
+  const settings = await getSiteSettings()
   return (
     <MainLayout
       title="Monetize Your AI Prompt Engineering Skills"
@@ -33,6 +38,8 @@ export default async function SellPage() {
           platforms={platforms}
           tags={tags}
           canSell={userHasOnboarded}
+          minPrice={Number(settings?.minPrice.toFixed(2)) || 0}
+          maxPrice={Number(settings?.maxPrice.toFixed(2)) || 100}
         />
       </div>
     </MainLayout>
