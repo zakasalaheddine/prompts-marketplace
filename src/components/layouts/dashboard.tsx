@@ -10,10 +10,6 @@ const sidebarNavItems = [
     href: '/dashboard'
   },
   {
-    title: 'Pages',
-    href: '/'
-  },
-  {
     title: 'Site Setting',
     href: '/dashboard/site'
   }

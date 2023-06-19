@@ -67,7 +67,7 @@ export default function MainLayout({
                     </Link>
                   )}
                   {user && (
-                    <Avatar className='h-8 w-8'>
+                    <Avatar className="h-8 w-8">
                       <AvatarImage src={user.imageUrl} />
                       <AvatarFallback>{`${user.firstName?.at(
                         0
@@ -87,10 +87,9 @@ export default function MainLayout({
           Ai Buddy
         </h2>
         <div className="flex text-white gap-2 font-light tracking-tight">
-          <Link href="/">About</Link>
-          <Link href="/">Contact</Link>
-          <Link href="/">Privacy</Link>
-          <Link href="/">Terms of conditions</Link>
+          <Link href="/p/about-us">About</Link>
+          <Link href="/p/privacy-policy">Privacy</Link>
+          <Link href="/p/terms-and-conditions">Terms of conditions</Link>
         </div>
       </footer>
     </main>
