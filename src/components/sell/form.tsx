@@ -50,6 +50,7 @@ export default function SellForm({
   const [prompt, setPrompt] = useState('')
   const [errors, setErrors] = useState<any>({})
   const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
 
   async function addNewPrompt(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -87,11 +88,12 @@ export default function SellForm({
     formData.append('prompt', prompt)
     try {
       setIsLoading(true)
-      const { data } = await axios.post<Prompt>('/api/sell', formData, {
+      await axios.post<Prompt>('/api/sell', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setIsLoading(false)
-      router.push(`/prompt/${data.slug}`)
+      toast({ title: 'Prompt submitted for review' })
+      router.push(`/`)
     } catch (error) {
       console.log(error)
       setIsLoading(false)
