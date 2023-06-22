@@ -9,12 +9,11 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import PaymentSection from './payment-section'
-import { exclude } from '@/lib/prisma/exclude'
 import PromptText from './prompt'
 
 const getPrompt = async (slug: string) => {
   const selectedPrompt = await prisma.prompt.findUnique({
-    where: { slug },
+    where: { slug: decodeURIComponent(slug) },
     include: {
       category: true,
       platform: true,
@@ -82,22 +81,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function PromptPage({
-  params
-}: {
-  params: { slug: string }
-}) {
+export default async function PromptPage({ params }: Props) {
   const prompt = await getPrompt(params.slug)
+  console.log({ prompt, slug: params.slug })
   if (!prompt) return notFound()
   const seller = await getSeller(prompt.user_id)
   if (!seller) return notFound()
+
   const getImages = () => {
+    const promptCover =
+      prompt.cover.trim() !== '' ? prompt.cover : `/${prompt.platform.slug}.png`
     let promptImages = []
-    if (prompt?.cover) promptImages.push(prompt?.cover)
+    promptImages.push(promptCover)
     if (prompt?.images && Array.isArray(JSON.parse(prompt.images)))
       promptImages = [...promptImages, ...JSON.parse(prompt.images)]
     return promptImages
   }
+
   const isAdmin = await isCurrentUserAdmin()
   const seo = await querySEO()
 

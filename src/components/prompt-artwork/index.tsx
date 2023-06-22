@@ -23,33 +23,24 @@ export default function PromptArtwork({
   href,
   ...props
 }: PromptArtworkProps) {
+  const promptCover =
+    prompt.cover.trim() !== ''
+      ? prompt.cover
+      : `/${prompt.platform.slug}.png`
   return (
     <div className={cn('space-y-3 relative', className)} {...props}>
       <Link href={href}>
-        <div
-          className="overflow-hidden rounded-md"
-          style={{
-            backgroundColor: prompt?.category?.bgColor && prompt.cover.trim() === ''
-              ? prompt?.category?.bgColor
-              : 'transparent',
-            height:
-              prompt?.category?.bgColor && prompt.cover.trim() === ''
-                ? height
-                : 'auto'
-          }}
-        >
-          {prompt.cover.trim() && (
-            <Image
-              src={prompt.cover}
-              alt={prompt.title}
-              width={width}
-              height={height}
-              className={cn(
-                'h-auto w-auto object-contain transition-all hover:scale-105',
-                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
-              )}
-            />
-          )}
+        <div className="overflow-hidden rounded-md">
+          <Image
+            src={promptCover}
+            alt={prompt.title}
+            width={width}
+            height={height}
+            className={cn(
+              'h-auto w-auto object-contain transition-all hover:scale-105',
+              aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
+            )}
+          />
         </div>
       </Link>
       <div className="space-y-1 text-sm">
