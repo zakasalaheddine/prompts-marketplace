@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   const promptSell = SellFormSchema.extend({
     price: z.number()
       .min(Number(settings?.minPrice.toFixed(2)) || 0)
-      .max(Number(settings?.minPrice.toFixed(2)) || 0)
+      .max(Number(settings?.maxPrice.toFixed(2)) || 0)
   }).safeParse({
     ...Object.fromEntries(data.entries()),
     price: Number(data.get('price')),

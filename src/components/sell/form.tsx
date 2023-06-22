@@ -298,7 +298,7 @@ export default function SellForm({
           variant="secondary"
           className="max-w-sm"
           type="submit"
-          disabled={!canSell}
+          disabled={!canSell || isLoading}
         >
           {isLoading ? (
             <Loader2 className="animate-spin" />

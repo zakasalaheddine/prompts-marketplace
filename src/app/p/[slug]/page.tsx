@@ -1,14 +1,9 @@
 import MainLayout from '@/components/layouts/main'
 import { prisma } from '@/db'
+import { ALLOWED__PAGES } from '@/lib/allowed-pages'
 import { isCurrentUserAdmin } from '@/lib/isAdmin'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-
-export const ALLOWED__PAGES = {
-  'about-us': 'aboutUsContent',
-  'privacy-policy': 'privacyContent',
-  'terms-and-conditions': 'termsContent'
-}
 
 const findPageContent = async () => {
   return await prisma.siteSetting.findFirst({

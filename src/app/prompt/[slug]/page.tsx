@@ -145,8 +145,8 @@ export default async function PromptPage({ params }: Props) {
               </Link>
             ))}
           </div>
-          {'alreadyPurchased' in prompt ? (
-            <PromptText promptText={prompt.prompt} />
+          {'alreadyPurchased' in prompt && 'prompt' in prompt ? (
+            <PromptText promptText={prompt.prompt as string} />
           ) : (
             <PaymentSection
               price={`${singlePrompt.price}`}

@@ -2,7 +2,7 @@ import DashboardLayout from '@/components/layouts/dashboard'
 import PromptsDataTable from './prompts-datatable'
 import { prisma } from '@/db'
 
-export const queryPrompts = async () =>
+const queryPrompts = async () =>
   await prisma.prompt.findMany({
     where: { status: 'DRAFT' },
     include: {

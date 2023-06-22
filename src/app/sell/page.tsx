@@ -30,6 +30,7 @@ export default async function SellPage() {
       description="Showcase Your Creativity and Craft on Our Marketplace"
       sellerPage
       isAdmin={isAdmin}
+      logoText={settings?.name}
     >
       <div className="flex flex-col justify-center gap-4 w-full">
         {!userHasOnboarded && <PaypalConnectionButton />}

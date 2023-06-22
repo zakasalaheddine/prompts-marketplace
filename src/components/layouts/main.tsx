@@ -84,7 +84,7 @@ export default function MainLayout({
       </div>
       <footer className="w-full bg-secondary z-40 h-20 flex px-20 items-center justify-between">
         <h2 className="mb-2 px-2 text-2xl font-semibold tracking-tight text-white">
-          Ai Buddy
+          {logoText ? logoText : 'Ai Buddy'}
         </h2>
         <div className="flex text-white gap-2 font-light tracking-tight">
           <Link href="/p/about-us">About</Link>
